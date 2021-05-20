@@ -1,0 +1,55 @@
+# The main entry point of the workflow.
+# After configuring, running snakemake -n in a clone of this repository should successfully execute a dry-run of the workflow.
+
+
+# this container defines the underlying OS for each job when using the workflow
+# with --use-conda --use-singularity
+# container: "docker://continuumio/miniconda3"
+
+# report: "report/workflow.rst"
+
+include: "rules/common.smk"
+include: "rules/make_count_tables.smk"
+
+
+rule all:
+    input: all_input
+
+
+rule create_bowtie2_index:
+  input:
+    fasta='amplicons/Amplicons.fa'
+  output:
+    index='amplicons/Amplicons.fa.1.bt2'
+  shell:
+    """
+    bash -c '
+      . $HOME/.bashrc 
+      conda activate crispresso2_210104
+      bowtie2-build {input.fasta} {input.fasta}
+    '
+    """
+
+# map individual fastqs to the bowtie index
+rule map_reads:
+    input:
+        fastq=lambda wildcards: samplesheet.at[wildcards.SampleID,'fastqR1'],
+    output:
+        sam='results/samFiles/{SampleID}.sam.gz'
+    params:
+    	index=config['guide_index']
+    shell:
+        "zless {input.fastq} | bowtie -v0 -p1 --all -x {params.index} - | gzip > {output.sam}"
+
+
+# count reads per guide in each sample
+rule count_reads:
+    input:
+        sam='results/samFiles/{SampleID}.sam.gz'
+    output:
+        count='results/counts/{SampleID}.count.txt'
+    params:
+    shell:
+        "zless {input.sam} | cut -f3 | sort | uniq -c | tr -s ' ' '\t' | cut -f2-3 > {output.count}"
+
+
