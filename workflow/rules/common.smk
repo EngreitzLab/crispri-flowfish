@@ -109,6 +109,14 @@ def get_bin_list():
 	print("Processing unique bins: " + ' '.join(binList))
 	return(binList)
 
+def get_gene(wildcards):
+	currSamples = samplesheet.loc[(samplesheet['ExperimentIDReplicates'] == wildcards.ExperimentIDReplicates) & (samplesheet['Bin'].isin(binList))]
+	Gene = currSamples['FlowFISHGene'].unique()
+	if (len(Gene) != 1):
+		print(currSamples['SampleID'])
+		raise ValueError("Found more than one possible Gene. Correct the samplesheet and rerun.")
+	return Gene[0]
+
 
 
 # global variables
@@ -118,6 +126,12 @@ repCols = config['replicate_keycols'].split(',')
 codedir = config['codedir']
 sortparamsdir = config['sortparamsdir']
 fastqdir = config['fastqdir']
+
+# defining some other globals here
+window = 10 # had to change this because not enough guides at prom
+mineffectsize = 0
+minGuides = 3
+fdr = 0.05
 
 samplesheet = load_sample_sheet(config['sample_sheet'])
 samplesheet.to_csv("SampleList.snakemake.tsv", index=False, header=True, sep='\t')
@@ -142,6 +156,15 @@ def all_input(wildcards):
 	## Output files for replicate experiments
 	if len(repCols) > 0:
 		wanted_input.extend(list(samplesheet['ExperimentIDReplicates_BinCounts'].unique()))
+		wanted_input.extend([
+			'results/byExperimentRep/{}.raw_effects.txt'.format(e) for e in samplesheet.loc[samplesheet['Bin'].isin(binList)]['ExperimentIDReplicates'].unique()
+		])
+		wanted_input.extend([
+			'results/byExperimentRep/{}.scaled.txt'.format(e) for e in samplesheet.loc[samplesheet['Bin'].isin(binList)]['ExperimentIDReplicates'].unique()
+		])
+		wanted_input.extend([
+			'results/byExperimentRep/{}.KnownEnhancers.FlowFISH.txt'.format(e) for e in samplesheet.loc[samplesheet['Bin'].isin(binList)]['ExperimentIDReplicates'].unique()
+		])
 
 	## Output files for experiments (with replicates merged)
 	wanted_input.extend([])

@@ -1,0 +1,260 @@
+Screen	name	Replicate	TSS_qPCR	qPCR_Date	TSS_Override	Notes	Astrios FlowFISH Fold Change	Cytoflex FlowFISH Fold Change	FlowFISH Date	Sort Date	Seq Date
+ASNA1-R2	ASNA1	2	0.15	Assumed				2.3			
+BAX-R1	BAX	1	0.15	Assumed				2.9			
+BAX-R2	BAX	2	0.15	Assumed							
+BCAT2-R1	BCAT2	1	0.15	Assumed				2.4			
+BCAT2-R2	BCAT2	2	0.15	Assumed							
+C19orf43-R2	C19orf43	2	0.15	Assumed				3.5			
+C19orf43-R3	C19orf43	3	0.15	Assumed							
+CALR-R3	CALR	3	0.15	Assumed				6.2			
+CALR-R4	CALR	4	0.15	Assumed							
+CBX5-R2	CBX5	2	0.15	Assumed				2.9			
+CNBP-R3	CNBP	3	0.15	Assumed				3.4			
+CNBP-R4	CNBP	4	0.15	Assumed							
+COPG-R1	COPG1	1	0.15	Assumed				4.7			
+COPZ1-R1	COPZ1	1	0.15	Assumed				3.3			
+DHPS-R1	DHPS	1	0.15	Assumed				2.7			
+DNASE2-R2	DNASE2	2	0.15	Assumed				2.4			
+DNASE2-R3	DNASE2	3	0.15	Assumed				2.4			
+EBP-3	EBP	3	0.15	Assumed		Cytoflex estimated		3			
+EBP-4	EBP	4	0.15	Assumed							
+FTL-R1	FTL	1	0.15	Assumed				15.5			
+FTL-R2	FTL	2	0.15	Assumed							
+FUT1-R1	FUT1	1	0.15	Assumed	49258647	Dont have guides at TSS used in K562		2.3			
+FUT1-R2	FUT1	2	0.15	Assumed	49258647	Dont have guides at TSS used in K562					
+GATA1-1	GATA1	1	0.15	Assumed				7.3			
+GATA1-2	GATA1	2	0.15	Assumed				7			
+GATA1-3	GATA1	3	0.15	Assumed				6.6			
+GATA1-4	GATA1	4	0.15	Assumed				6.5			
+GATA1-5	GATA1	5	0.15	Assumed				10.7	170802		
+GATA1-6	GATA1	6	0.15	Assumed				11.5	170802		
+GATA2-R1	GATA2	1	0.15	Assumed				3.4			
+GATA2-R3	GATA2	3	0.15	Assumed				3.5			
+H1FX-R2	H1FX	2	0.15	Assumed				2.8			
+H1FX-R3	H1FX	3	0.15	Assumed				3			
+HDAC6-1	HDAC6	1	0.15	Assumed				3.1	170227		
+HDAC6-2	HDAC6	2	0.15	Assumed				3.2	170227		
+HDAC6-R5	HDAC6	5	0.15	Assumed							
+HDAC6-R6	HDAC6	6	0.15	Assumed							
+HNRNPA1-R1	HNRNPA1	1	0.15	Assumed				3.9			
+ITGA5-R1	ITGA5	1	0.15	Assumed				4			
+JUNB-R1	JUNB	1	0.15	Assumed				2.2			
+JUNB-R2	JUNB	2	0.15	Assumed							
+KLF1-R1	KLF1	1	0.15	Assumed				4			
+KLF1-R3	KLF1	3	0.15	Assumed							
+LYL1-R1	LYL1	1	0.15	Assumed				2.7			
+LYL1-R2	LYL1	2	0.15	Assumed							
+NFE2-R1	NFE2	1	0.15	Assumed	54689563			3.5			
+NUCB1-R1	NUCB1	1	0.15	Assumed				9.4			
+NUCB1-R2	NUCB1	2	0.15	Assumed							
+OTUD5-5	OTUD5	5	0.15	Assumed				11.4	170802		
+OTUD5-6	OTUD5	6	0.15	Assumed				9.7	170802		
+PIM2-1	PIM2	1	0.15	Assumed				3.9	170227		
+PIM2-2	PIM2	2	0.15	Assumed				4.2	170227		
+PIM2-R3	PIM2	3	0.15	Assumed							
+PIM2-R5	PIM2	5	0.15	Assumed							
+PLP2-R1	PLP2	1	0.15	Assumed	49028955			6.2	170911		
+PLP2-R2	PLP2	2	0.15	Assumed	49028955			7.6	170911		
+PPP1R15A-R1	PPP1R15A	1	0.15	Assumed				3.7			
+PPP1R15A-R2	PPP1R15A	2	0.15	Assumed							
+PQBP1-1	PQBP1	1	0.15	Assumed				2.1	170227		
+PQBP1-2	PQBP1	2	0.15	Assumed				2.4	170227		
+PQBP1-R5	PQBP1	5	0.15	Assumed							
+PQBP1-R6	PQBP1	6	0.15	Assumed							
+PRDX2-R1	PRDX2	1	0.15	Assumed				3.5			
+PRDX2-R2	PRDX2	2	0.15	Assumed				4.4			
+PRDX2-R3	PRDX2	3	0.15	Assumed				5.3			
+RAB7A-R2	RAB7A	2	0.15	Assumed				2.7			
+RAB7A-R3	RAB7A	3	0.15	Assumed							
+RAD23A-R2	RAD23A	2	0.15	Assumed				4.6			
+RAD23A-R3	RAD23A	3	0.15	Assumed							
+RNASEH2A-R2	RNASEH2A	2	0.15	Assumed				2.4			
+RNASEH2A-R3	RNASEH2A	3	0.15	Assumed				2.5			
+RPN1-R3	RPN1	3	0.15	Assumed							
+RPN1-R4	RPN1	4	0.15	Assumed				5.5			
+SEC61A1-R2	SEC61A1	2	0.15	Assumed				3.9			
+SEC61A1-R3	SEC61A1	3	0.15	Assumed							
+SLC35A2-R1	SLC35A2	1	0.15	Assumed				9.1	170911		
+SLC35A2-R2	SLC35A2	2	0.15	Assumed				9.5	170911		
+SLC38A5-R1	SLC38A5	1	0.15	Assumed				8.3			
+SLC38A5-R2	SLC38A5	2	0.15	Assumed							
+SUV39H1-R1	SUV39H1	1	0.15	Assumed							
+SUV39H1-R2	SUV39H1	2	0.15	Assumed		Cytoflex estimated		3			
+SUV39H1-R3	SUV39H1	3	0.15	Assumed							
+SUV39H1-R4	SUV39H1	4	0.15	Assumed							
+TIMM17B-R1	TIMM17B	1	0.15	Assumed				9.8	170911		
+TIMM17B-R2	TIMM17B	2	0.15	Assumed				8.9	170911		
+TNPO2-R2	TNPO2	2	0.15	Assumed				2.2			
+WAS-1	WAS	1	0.15	Assumed							
+WAS-2	WAS	2	0.15	Assumed							
+WDR83OS-R1	WDR83OS	1	0.15	Assumed				3.4	180124		180129
+WDR83OS-R2	WDR83OS	2	0.15	Assumed							
+ZNF385A-R1	ZNF385A	1	0.15	Assumed				2.3	171120		
+ZNF385A-R3	ZNF385A	3	0.15	Assumed				2.6	180205		
+RBM3-0	RBM3	0	0.15	Assumed		Cytoflex estimated		1.5			
+RUVBL1-0	RUVBL1	0	0.15	Assumed				1.7			
+FARSA-R2	FARSA	2	0.15	Assumed				2.6			
+MYC-1	MYC	1	0.15	Assumed	128748477						
+HBE1-1	HBE1	1	0.15	Assumed	5291174						
+CD83-R21	CD83	21	0.15	Assumed		VEE1					
+CD83-R22	CD83	22	0.15	Assumed		VEE1					
+CD83-R23	CD83	23	0.15	Assumed		VEE1					
+CD83-R24	CD83	24	0.15	Assumed		VEE1					
+DNMT3L-R1	DNMT3L	1	0.15	Assumed		VEE1					
+GATA1-R10	GATA1	10	0.15	Assumed		"GATA1 miniscreen, same cells as R11. Compensated"					
+GATA1-R11	GATA1	11	0.15	Assumed		"GATA1 miniscreen, same cells as R10. Uncompensated"					
+ICOSLG-R16	ICOSLG	16	0.15	Assumed		VEE1					
+ICOSLG-R17	ICOSLG	17	0.15	Assumed		VEE1					
+ICOSLG-R18	ICOSLG	18	0.15	Assumed		VEE1					
+ICOSLG-R19	ICOSLG	19	0.15	Assumed		VEE1					
+ITGAL-R11	ITGAL	11	0.15	Assumed		VEE1					
+ITGAL-R12	ITGAL	12	0.15	Assumed		VEE1					
+PFKFB3-R16	PFKFB3	16	0.15	Assumed		VEE1					
+PFKFB3-R17	PFKFB3	17	0.15	Assumed		VEE1					
+PFKFB3-R18	PFKFB3	18	0.15	Assumed		VEE1					
+PFKFB3-R19	PFKFB3	19	0.15	Assumed		VEE1					
+PFKFB3-R20	PFKFB3	20	0.15	Assumed		VEE1					
+PFKFB3-R21	PFKFB3	21	0.15	Assumed		VEE1					
+PFKFB3-R22	PFKFB3	22	0.15	Assumed		VEE1					
+PFKFB3-R23	PFKFB3	23	0.15	Assumed		VEE1					
+PPIF-R15	PPIF	15	0.15	Assumed		PPIF miniscreen in THP1_4hLPS					
+PRKAA1-R1	PRKAA1	1	0.15	Assumed		VEE1					
+PRKAA1-R2	PRKAA1	2	0.15	Assumed		VEE1					
+PRKAA1-R3	PRKAA1	3	0.15	Assumed		VEE1					
+PRKCQ-R1	PRKCQ	1	0.15	Assumed		VEE1					
+PRKCQ-R2	PRKCQ	2	0.15	Assumed		VEE1					
+PRKCQ-R3	PRKCQ	3	0.15	Assumed		VEE1					
+PRKCQ-R4	PRKCQ	4	0.15	Assumed		VEE1					
+PTGER4-R7	PTGER4	7	0.15	Assumed		VEE1					
+PTGER4-R8	PTGER4	8	0.15	Assumed		VEE1					
+SEPHS2-R1	SEPHS2	1	0.15	Assumed		VEE1					
+SEPHS2-R2	SEPHS2	2	0.15	Assumed		VEE1					
+PPIF-R1	PPIF	1	0.15	Assumed							
+PPIF-R2	PPIF	2	0.15	Assumed							
+PPIF-R3	PPIF	3	0.15	Assumed							
+PPIF-R4	PPIF	4	0.15	Assumed							
+PPIF-R5	PPIF	5	0.15	Assumed							
+PPIF-R6	PPIF	6	0.15	Assumed							
+PPIF-R7	PPIF	7	0.15	Assumed							
+PPIF-R8	PPIF	8	0.15	Assumed							
+PPIF-R9	PPIF	9	0.15	Assumed							
+PPIF-R10	PPIF	10	0.15	Assumed							
+PPIF-R11	PPIF	11	0.15	Assumed							
+PPIF-R12	PPIF	12	0.15	Assumed							
+PPIF-R13	PPIF	13	0.15	Assumed							
+PPIF-R14	PPIF	14	0.15	Assumed							
+PTGER4-R1	PTGER4	1	0.15	Assumed							
+PTGER4-R2	PTGER4	2	0.15	Assumed							
+PFKFB3-R1	PFKFB3	1	0.15	Assumed							
+ITGAL-R1	ITGAL	1	0.15	Assumed							
+ITGAL-R2	ITGAL	2	0.15	Assumed							
+ICOSLG-R5	ICOSLG	5	0.15	Assumed							
+CD83-R8	CD83	8	0.15	Assumed							
+CD83-R9	CD83	9	0.15	Assumed							
+CD83-R10	CD83	10	0.15	Assumed							
+ITGAL-R4	ITGAL	4	0.15	Assumed							
+ITGAL-R3	ITGAL	3	0.15	Assumed							
+PFKFB3-R24	PFKFB3	24	0.15	Assumed							
+PFKFB3-R25	PFKFB3	25	0.15	Assumed							
+ITGAL-R13	ITGAL	13	0.15	Assumed							
+ITGAL-R14	ITGAL	14	0.15	Assumed							
+ICOSLG-R20	ICOSLG	20	0.15	Assumed							
+ICOSLG-R21	ICOSLG	21	0.15	Assumed							
+PTGER4-R9	PTGER4	9	0.15	Assumed							
+PTGER4-R10	PTGER4	10	0.15	Assumed							
+PFKFB3-R26	PFKFB3	26	0.15	Assumed							
+PFKFB3-R27	PFKFB3	27	0.15	Assumed							
+ITGAL-R15	ITGAL	15	0.15	Assumed							
+ITGAL-R16	ITGAL	16	0.15	Assumed							
+ICOSLG-R22	ICOSLG	22	0.15	Assumed							
+ICOSLG-R23	ICOSLG	23	0.15	Assumed							
+ICOSLG-R24	ICOSLG	24	0.15	Assumed							
+ICOSLG-R25	ICOSLG	25	0.15	Assumed							
+ZMIZ1-R1	ZMIZ1	1	0.15	Assumed							
+ZCCHC24-R1	ZCCHC24	1	0.15	Assumed							
+ZMIZ1-2	ZMIZ1	2	0.15	Assumed							
+ZCCHC24-2	ZCCHC24	2	0.15	Assumed							
+CD83-26	CD83	26	0.15	Assumed							
+CD83-27	CD83	27	0.15	Assumed							
+ICOSLG-27	ICOSLG	27	0.15	Assumed							
+ICOSLG-28	ICOSLG	28	0.15	Assumed							
+ICOSLG-29	ICOSLG	29	0.15	Assumed							
+ICOSLG-30	ICOSLG	30	0.15	Assumed							
+ITGAL-18	ITGAL	18	0.15	Assumed							
+ITGAL-19	ITGAL	19	0.15	Assumed							
+ITGAL-20	ITGAL	20	0.15	Assumed							
+PFKFB3-30	PFKFB3	30	0.15	Assumed							
+PFKFB3-31	PFKFB3	31	0.15	Assumed							
+PTGER4-11	PTGER4	11	0.15	Assumed							
+PTGER4-12	PTGER4	12	0.15	Assumed							
+SEPHS2-10	SEPHS2	10	0.6	Assumed							
+SEPHS2-11	SEPHS2	11	0.6	Assumed							
+SEPHS2-12	SEPHS2	12	0.6	Assumed							
+SEPHS2-13	SEPHS2	13	0.6	Assumed							
+SEPHS2-5	SEPHS2	5	0.6	Assumed							
+SEPHS2-6	SEPHS2	6	0.6	Assumed							
+SEPHS2-7	SEPHS2	7	0.6	Assumed							
+SEPHS2-8	SEPHS2	8	0.6	Assumed							
+SEPHS2-9	SEPHS2	9	0.6	Assumed							
+ZMIZ1-3	ZMIZ1	3	0.15	Assumed							
+ZCCH24-3	ZCCHC24	3	0.15	Assumed							
+ZMIZ1-4	ZMIZ1	4	0.15	Assumed							
+ZCCH24-4	ZCCHC24	4	0.15	Assumed							
+IL2RA-1	IL2RA	1	0.15	Assumed		FBF_IL2RA					181228
+IL2RA-2	IL2RA	2	0.15	Assumed		FBF_IL2RA					181228
+PFKFB3-34	PFKFB3	34	0.15	Assumed		FBF_IL2RA					181228
+IRF8-1	IRF8	1	0.15	Assumed							190208
+IRF8-2	IRF8	2	0.15	Assumed							190208
+IRF8-3	IRF8	3	0.15	Assumed							190208
+IRF8-4	IRF8	4	0.15	Assumed							190208
+ITGAL-21	ITGAL	21	0.15	Assumed							190208
+PFKFB3-32	PFKFB3	32	0.15	Assumed							190208
+PFKFB3-33	PFKFB3	33	0.15	Assumed							190208
+PTGER4-13	PTGER4	13	0.15	Assumed							190208
+PTGER4-14	PTGER4	14	0.15	Assumed							190208
+GATA1-20	GATA1	20	0.15	Assumed		CoreU6U6					190323
+GATA1-21	GATA1	21	0.15	Assumed		CoreU6U6					190323
+GATA1-22	GATA1	22	0.15	Assumed		CoreU6H1					190323
+GATA1-23	GATA1	23	0.15	Assumed		CoreU6H1					190323
+GATA1cut-1	GATA1	1	0.5	Assumed							170717
+GATA1cut-2	GATA1	2	0.5	Assumed							170717
+MYCcut-1	MYC	1	0.5	Assumed							170717
+MYCcut-2	MYC	2	0.5	Assumed							170717
+MYC-R2	MYC	2	0.36	qPCR	128972630	e2 since no TSS					
+MYC-R3	MYC	3	0.36	qPCR	128972630	e2 since no TSS					
+PVT1-R1	PVT1	1	0.09	qPCR	129057958	e3					
+PVT1-R2	PVT1	2	0.09	qPCR	129057958	e3					
+CCDC26-R1	CCDC26	1	0.08	qPCR	130594366	e5 since no TSS					
+CCDC26-R2	CCDC26	2	0.08	qPCR	130594366	e5 since no TSS					
+BLK-1	BLK	1	0.15	Assumed							190523
+BLK-2	BLK	2	0.15	Assumed							190523
+CD40-1	CD40	1	0.15	Assumed							190523
+CD40-2	CD40	2	0.15	Assumed							190523
+ELMO1-1	ELMO1	1	0.15	Assumed							190523
+ELMO1-2	ELMO1	2	0.15	Assumed							190523
+ETS1-1	ETS1	1	0.15	Assumed							190523
+ETS1-2	ETS1	2	0.15	Assumed							190523
+ETS1-3	ETS1	3	0.15	Assumed							190523
+ETS1-4	ETS1	4	0.15	Assumed							190523
+IL6ST-10	IL6ST	10	0.15	Assumed							190523
+IL6ST-9	IL6ST	9	0.15	Assumed							190523
+SMUG1-R1	SMUG1	1	0.15	Assumed							
+C3orf37-R1	C3orf37	1	0.15	Assumed							
+SMUG1-R2	SMUG1	2	0.15	Assumed							
+ACAD8-1	ACAD8	1	0.15	Assumed		GM12878-LCL2					190925
+DCAF4-1	DCAF4	1	0.15	Assumed		GM12878-LCL2					190925
+DGCR14-1	DGCR14	1	0.15	Assumed		GM12878-LCL2					190925
+FLYWCH1-1	FLYWCH1	1	0.15	Assumed		GM12878-LCL2					190925
+IKZF3-1	IKZF3	1	0.15	Assumed		GM12878-LCL2					190925
+Il16-1	Il16	1	0.15	Assumed		GM12878-LCL2					190925
+LZIC-1	LZIC	1	0.15	Assumed		GM12878-LCL2					190925
+MGLL-1	MGLL	1	0.15	Assumed		GM12878-LCL2					190925
+SLC7A7-1	SLC7A7	1	0.15	Assumed		GM12878-LCL2					190925
+IL6ST-1	IL6ST	1	0.15	Assumed		IL6ST_for_paper					190323
+IL6ST-2	IL6ST	2	0.15	Assumed		IL6ST_for_paper					190323
+IL6ST-3	IL6ST	3	0.15	Assumed		IL6ST_for_paper					190323
+IL6ST-4	IL6ST	4	0.15	Assumed		IL6ST_for_paper					190323
+IL6ST-5	IL6ST	5	0.15	Assumed		IL6ST_for_paper					190323
+IL6ST-6	IL6ST	6	0.15	Assumed		IL6ST_for_paper					190323
+IL6ST-7	IL6ST	7	0.15	Assumed		IL6ST_for_paper					190323
+IL6ST-8	IL6ST	8	0.15	Assumed		IL6ST_for_paper					190323

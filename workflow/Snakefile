@@ -10,12 +10,16 @@
 
 include: "rules/common.smk"
 include: "rules/make_count_tables.smk"
+include: "rules/estimate_effect_sizes.smk"
+include: "rules/convert_clamp_make_windows.smk"
+include: "rules/score_peaks.smk"
 
 
 rule all:
     input: all_input
 
 
+## Delete this? 
 rule create_bowtie2_index:
   input:
     fasta='amplicons/Amplicons.fa'
