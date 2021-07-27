@@ -57,7 +57,7 @@ rule format_data:
         screendata='results/byExperimentRep/{ExperimentIDReplicates}.ScreenData.txt'
     params:
         gene=get_gene,
-        score='results/byExperimentRep/{ExperimentIDReplicates}' # need to add projectdir for full path here?
+        score='results/byExperimentRep/{ExperimentIDReplicates}.scaled.txt' # need to add projectdir for full path here?
     run:
         shell('echo -e "Screen\tScreenData\tRNAReadoutMethod\tReference" > {output.screendata}')
         shell('echo -e "{params.gene}\t{params.score}\tFlowFISH Screen\tThisStudy" >> {output.screendata}')
@@ -70,13 +70,22 @@ rule known_enhancers:
     output:
         screen="results/byExperimentRep/{ExperimentIDReplicates}.KnownEnhancers.FlowFISH.txt"
     params:
-        format=os.path.join(config['ep_code_dir'], 'src/CRISPRScreen/FormatCRISPRiScreensForPredictions.R'),
-        cellLine = 'HCT116-ENCODE',
-        neighborhoodsdir='config',
+        format=os.path.join(config['ep_code_dir'], 'src/CRISPRScreen/FormatCRISPRiScreensForPredictions.R'), ## TODO: Move this script into this repo, or point to github version
+        cellLine = config['cell_line'],
+        genes=config['genelist'],
+        enhancers=config['enhancer_list'],
         epcode=config['ep_code_dir'],
         fdr=fdr
     shell:
-        "Rscript {params.format} --output {output.screen} --neighborhoodDir {params.neighborhoodsdir} \
-            --screenData {input.screendata} --cellLine {params.cellLine} --codeDir {params.epcode} \
-            --addCRISPRiExtension TRUE --collapseToModelElements FALSE --buffer3p 2000 --fdrCutoff {params.fdr}"
+        "Rscript {params.format} \
+            --output {output.screen} \
+            --genesFile {params.genes} \
+            --enhancersFile {params.enhancers} \
+            --screenData {input.screendata} \
+            --cellLine {params.cellLine} \
+            --codeDir {params.epcode} \
+            --addCRISPRiExtension TRUE \
+            --collapseToModelElements TRUE \
+            --buffer3p 2000 \
+            --fdrCutoff {params.fdr}"
 
