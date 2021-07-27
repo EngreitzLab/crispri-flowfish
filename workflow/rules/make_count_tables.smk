@@ -107,3 +107,18 @@ rule make_flat_count_table_PCRrep:
     run:
         make_flat_table(samplesheet, output[0])
 
+
+rule plot_pcr_replicate_correlations:
+    input:
+        lambda wildcards:
+            ['results/byPCRRep/{ExperimentIDPCRRep}.bin_counts.txt'.format(ExperimentIDPCRRep=e) for e in samplesheet['ExperimentIDPCRRep']]
+    output:
+        pdf='results/summary/ReplicateCorrelation.pdf'
+    shell:
+        "Rscript crispri-flowfish/workflow/scripts/plotReplicateCorrelations.R \
+          --samplesheet SampleList.snakemake.tsv \
+          --groupcol ExperimentIDReplicates \
+          --filecol ExperimentIDPCRRep_BinCounts \
+          --outsummary {output.pdf}"
+
+

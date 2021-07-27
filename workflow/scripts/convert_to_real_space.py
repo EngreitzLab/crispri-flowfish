@@ -57,6 +57,7 @@ with open(args.log, 'w') as log:
     # normalize to NCs (and clip at 0)
     # mle['mleAvg'] = (mle['mleAvg'] / neg_ctrl_mean).clip(lower=0)
     mle['mleAvg'] = mle['mleAvg'] / neg_ctrl_mean
+    mle['WeightedAvg'] = mle['WeightedAvg'] / np.mean(neg_ctrls['WeightedAvg'])
 
     # write bed and bedgraph
     bed_cols = ["chr", "start", "end", "name", "score", "strand", "GuideSequence", "target", "OffTargetScore", "OligoID", "WeightedAvg", "mleAvg", "mleSD", "sum1"]
@@ -67,6 +68,11 @@ with open(args.log, 'w') as log:
     for_bedgraph['start'] = for_bedgraph['start'].astype(np.int32)
     for_bedgraph['end'] = for_bedgraph['end'].astype(np.int32)
     for_bedgraph.to_csv(args.bedgraph, sep='\t', index=False, header=False)
+
+    for_bedgraph2 = mle.loc[~mle['chr'].isna(),["chr", "start", "end", "WeightedAvg"]]
+    for_bedgraph2['start'] = for_bedgraph2['start'].astype(np.int32)
+    for_bedgraph2['end'] = for_bedgraph2['end'].astype(np.int32)
+    for_bedgraph2.to_csv(args.bedgraph + ".WeightedAvg.bedgraph", sep='\t', index=False, header=False)
 
     # clamp
     #mle.loc[mle['mleAvg'] > args.clamp, 'mleAvg'] = args.clamp

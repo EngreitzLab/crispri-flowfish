@@ -10,6 +10,8 @@ rule convert_to_real_space:
     input:
         mleouts='results/byExperimentRep/{ExperimentIDReplicates}.raw_effects.txt',
         design=config['design_file']
+    params:
+        minsum=config['min_guide_count_sum']
     output:
         bed='results/byExperimentRep/{ExperimentIDReplicates}.mean.bed',
         bedgraph='results/byExperimentRep/{ExperimentIDReplicates}.real_space.bedgraph',
@@ -18,8 +20,14 @@ rule convert_to_real_space:
     # params:
     #     background=lambda wildcards: float(background.loc[wildcards.screen].values[0])
     shell:
-        "python crispri-flowfish/workflow/scripts/convert_to_real_space.py -m {input.mleouts} \
-        	-d {input.design} -a {output.bed} -b {output.bedgraph} -o {output.real} -l {output.log}"
+        "python crispri-flowfish/workflow/scripts/convert_to_real_space.py \
+            -m {input.mleouts} \
+            -d {input.design} \
+            -a {output.bed} \
+            -b {output.bedgraph} \
+            -o {output.real} \
+            -l {output.log} \
+            --minsum {params.minsum}"
 
 
 # calculate effect per 20-guide window
