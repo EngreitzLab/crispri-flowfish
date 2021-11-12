@@ -29,7 +29,7 @@ Install Snakemake and conda environment using [conda](https://conda.io/projects/
 
 For installation details, see the [instructions in the Snakemake documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
 
-### Step 3: Set up the Sample Sheet
+### Step 3.1: Set up the Sample Sheet 
 
 (Updated 5/7/21)
 
@@ -54,6 +54,27 @@ Optional columns:
                         MLE estimates will also be performed at the level of this replicate ID, 
                         then compared according to grouping of the experiment key.
     fastqR1           If provided in the Sample Sheet, overwrites the default value (config['fastqdir']/{SampleID}_*_R1_*fastq.gz)
+
+### Step 3.2: Get the guide design file
+
+This file lists information about the gRNAs included in the experiment, and should in theory be output by the Engreitz Lab CRISPRi design pipeline (https://github.com/broadinstitute/CRISPRiTilingDesign)
+
+Columns (most are legacy from the gRNA designer and are not used by this pipeline):
+    
+    chr                 chromosome for gRNA spacer (can be blank, e.g. for non-targeting control)
+    start               start coordinate for gRNA spacer (can be blank, e.g. for non-targeting control)
+    end                 end coordinate for gRNA spacer (can be blank, e.g. for non-targeting control)
+    name                unique ID for the gRNA 
+    score               A score for the gRNA (not used by this pipeline)
+    strand              strand of the gRNA spacer
+    GuideSequence       Spacer sequence (variable length)
+    GuideSequenceMinusG Spacer sequence, minus a leading G (variable length)
+    MappingSequence     Fixed length spacer sequence used for mapping
+    OffTargetScore      gRNA off-target score
+    target              Required column used for grouping gRNAs into targets (e.g. promoter of a given gene) or 'negative_control' for negative control gRNAs
+    subpool             Column specifying a group of gRNAs 
+    OligoID             unique ID for the gRNA [required]
+
 
 ### Step 4: Provide sort params files
 
