@@ -92,7 +92,9 @@ This file includes the following columns:
     TSS_qPCR            Fraction expression remaining as measured by qPCR (e.g. 0.15 for 15% remaining). Set to NA to skip this adjustment.
                           The best 20-gRNA window from the FlowFISH screen will be adjusted to this value
     [Additional cols]   Any number of additional optional columns useful for annotating the qPCR data
-    
+
+See resources/qPCR.simple.txt for a simple example file where the experiment includes a single gene and where we do not want to adjust based on TSS knockdown.
+
 ### Step 4: Provide sort params files
 
 To do.
