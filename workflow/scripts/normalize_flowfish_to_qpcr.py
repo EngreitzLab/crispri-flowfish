@@ -35,6 +35,8 @@ def flowfish_to_qpcr(info_file, in_file, out_file, bedgraph, clamp, columns='mle
 
     # also write bedgraph
     bedgraph_cols = ["chr", "start", "end", "mleAvg"]
+    out_data['start'] = out_data['start'].astype(np.int32)
+    out_data['end'] = out_data['end'].astype(np.int32)
     out_data.loc[~out_data['chr'].isna(),bedgraph_cols].to_csv(bedgraph, sep='\t', index=False, header=False)
 
 

@@ -11,7 +11,7 @@ import argparse
 parser = argparse.ArgumentParser(description='Converts MLE log outputs to real space, normalizes to NCs, and filters/clamps')
 parser.add_argument("-m", "--mleouts", dest="mle", type=str,  help="MLE outputs (in log space)")
 parser.add_argument("-d", "--design", dest="design", type=str,  help="Design file")
-parser.add_argument("-a", "--bed", dest="bed", type=str,  help="Bed file to write to")
+#parser.add_argument("-a", "--bed", dest="bed", type=str,  help="Bed file to write to")
 parser.add_argument("-b", "--bedgraph", dest="bedgraph", type=str, help="Bedgraph file to write to")
 parser.add_argument("-o", "--clampout", dest="outfile", type=str, help="Clamped bed file to write to")
 parser.add_argument("-l", "--log", dest="log", type=str, help="Log file")
@@ -63,7 +63,7 @@ with open(args.log, 'w') as log:
     bed_cols = ["chr", "start", "end", "name", "score", "strand", "GuideSequence", "target", "OffTargetScore", "OligoID", "WeightedAvg", "mleAvg", "mleSD", "sum1"]
     bedgraph_cols = ["chr", "start", "end", "mleAvg"]
 
-    mle[bed_cols].to_csv(args.bed, sep='\t', index=False)
+    #mle[bed_cols].to_csv(args.bed, sep='\t', index=False)
     for_bedgraph = mle.loc[~mle['chr'].isna(),bedgraph_cols]
     for_bedgraph['start'] = for_bedgraph['start'].astype(np.int32)
     for_bedgraph['end'] = for_bedgraph['end'].astype(np.int32)

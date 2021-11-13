@@ -13,7 +13,7 @@ rule convert_to_real_space:
     params:
         minsum=config['min_guide_count_sum']
     output:
-        bed='results/byExperimentRep/{ExperimentIDReplicates}.mean.bed',
+        #bed='results/byExperimentRep/{ExperimentIDReplicates}.real_space.bed',
         bedgraph='results/byExperimentRep/{ExperimentIDReplicates}.real_space.bedgraph',
         real='results/byExperimentRep/{ExperimentIDReplicates}.real_space.txt',
         log='results/byExperimentRep/{ExperimentIDReplicates}.convert.log'
@@ -23,7 +23,6 @@ rule convert_to_real_space:
         "python crispri-flowfish/workflow/scripts/convert_to_real_space.py \
             -m {input.mleouts} \
             -d {input.design} \
-            -a {output.bed} \
             -b {output.bedgraph} \
             -o {output.real} \
             -l {output.log} \

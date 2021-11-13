@@ -39,6 +39,7 @@ parser.add_argument("-i", "--info", dest="info", type=str,  help="Screen info", 
 parser.add_argument("-u", "--summary", dest="summary", type=str,  help="Peak calling summary")
 parser.add_argument("-o", "--fullscore", dest="fullscore", type=str,  help="Full enhancer score")
 parser.add_argument("-p", "--peaks", dest="peaks", type=str,  help="Peaks")
+parser.add_argument("-n", "--epxtName", dest="exptName", type=str, help="Name of experiment to include in the peak calling summary")
 
 parser.add_argument("-m", "--minguides", dest="minguides", type=int, default=20, help="Min guides")
 parser.add_argument("-f", "--fdr", dest="fdr", type=float, default=0.05, help="FDR threshold")
@@ -72,7 +73,7 @@ FDRCUTTOFF = args.fdr
 MINEFFECTSIZE = args.mineffect
 SCORECOL = "mleAvg"
 
-SCREEN = args.peaks.split('/')[0]
+SCREEN = args.exptName
 
 
 # COLLAPSE=PROJECTDIR+"/"+SCREEN+"/"+SCREEN+".collapse.bed"

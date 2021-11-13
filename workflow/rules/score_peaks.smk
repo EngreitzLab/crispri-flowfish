@@ -24,7 +24,6 @@ rule collapse:
         'results/byExperimentRep/{ExperimentIDReplicates}.collapse.bed'
     shell:
         'tail -n+2 {input.scaled} | grep -vw "negative_control" | awk \'$2!="NA"\' | awk \'$2!="NaN"\' | \
-            awk \'BEGIN {{ OFS=FS="\t" }} {{ sub("\\\..*", "", $2); print }}\' | awk \'BEGIN {{ OFS=FS="\t" }} {{ sub("\\\..*", "", $3); print }}\' | \
             bedtools sort | bedtools map -o collapse -c 12 -a {input.enhancers} -b stdin | awk \'$4!="."\' > {output}'
 
 # score individual peaks
@@ -44,10 +43,22 @@ rule score_dhs:
     shell:
         "python crispri-flowfish/workflow/scripts/ScoreEnhancers.py -c {input.collapse} -s {input.scaled} \
             -u {output.summary} -o {output.score} -p {params.peaks} -m {params.minguides} \
-            -e {params.mineffectsize} -f {params.fdr}" 
+            -e {params.mineffectsize} -f {params.fdr} -exptName {wildcards.ExperimentIDReplicates}" 
 
         # $SCREEN $PROJECTDIR $POWER $MINEFFECTSIZE"
         # "{params.score} {params.screen} {params.mineffectsize} {params.enhancers} . {params.power} {params.codedir}"
+
+
+# Combine peak calling summary statistics across samples
+rule summarize_peak_calling:
+    input:
+        lambda wildcards:
+            ['results/byExperimentRep/{ExperimentIDReplicates}.PeakCallingSummary.txt'.format(ExperimentIDReplicates=e) for e in samplesheet['ExperimentIDReplicates']]
+    output:
+        summary='results/summary/PeakCallingSummary.tsv'
+    shell:
+        "csvtk concat -t {input}"
+
 
 # format screen for prediction
 rule format_data:
@@ -60,7 +71,8 @@ rule format_data:
         score='results/byExperimentRep/{ExperimentIDReplicates}.scaled.txt' # need to add projectdir for full path here?
     run:
         shell('echo -e "Screen\tScreenData\tRNAReadoutMethod\tReference" > {output.screendata}')
-        shell('echo -e "{params.gene}\t{params.score}\tFlowFISH Screen\tThisStudy" >> {output.screendata}')
+        #shell('echo -e "{params.gene}\t{params.score}\tFlowFISH Screen\tThisStudy" >> {output.screendata}')
+        shell('echo -e "{params.gene}\t{input.score}\tFlowFISH Screen\tThisStudy" >> {output.screendata}')
         shell('echo "{params.gene}"')
 
 # format screen for prediction
