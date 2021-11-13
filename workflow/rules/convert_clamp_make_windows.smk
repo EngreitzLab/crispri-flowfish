@@ -52,7 +52,7 @@ rule tss:
     params:
         qpcr=config['qpcr'],
         genelist=config['genelist'],
-        gene=get_gene
+        gene=get_gene_for_qPCR_adjustment
     shell:
         "python crispri-flowfish/workflow/scripts/FlowFISHtssKD.py -g {params.gene} -w {input.window} -q {params.qpcr} -l {params.genelist} -o {output.info}"
 

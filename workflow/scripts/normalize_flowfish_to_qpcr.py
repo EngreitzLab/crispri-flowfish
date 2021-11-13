@@ -1,5 +1,6 @@
 import pandas as pd
 import argparse
+import numpy as np
 
 
 def flowfish_to_qpcr(info_file, in_file, out_file, bedgraph, clamp, columns='mleAvg mleSD'.split()):
@@ -11,6 +12,10 @@ def flowfish_to_qpcr(info_file, in_file, out_file, bedgraph, clamp, columns='mle
     # compute transform from ff to qpcr
     lo_ff = screen_info.FlowFISH_at_TSS
     lo_qpcr = screen_info.TSS_qPCR
+    if (np.isnan(lo_qpcr) or lo_qpcr == "NA"): ## If this value is not provided, then set this value so effectively no adjustment is performed
+        print("qPCR TSS value missing, so we will not transform the data.\n")
+        lo_qpcr = lo_ff
+    assert (lo_qpcr >= 0 and lo_qpcr < 1)
     slope = (1 - lo_qpcr) / (1 - lo_ff)
     print(slope, lo_ff, lo_qpcr)
 
@@ -30,13 +35,15 @@ def flowfish_to_qpcr(info_file, in_file, out_file, bedgraph, clamp, columns='mle
             assert False, "Don't know how to normalize column  {}".format(c)
         out_data[c] = vals
 
+    # fix coordinates for printing
+    out_data['start'] = [str(int(x)) if not np.isnan(x) else '' for x in out_data['start']]
+    out_data['end'] = [str(int(x)) if not np.isnan(x) else '' for x in out_data['end']]
+
     # save output
     out_data.to_csv(out_file, sep="\t", index=None)
 
     # also write bedgraph
     bedgraph_cols = ["chr", "start", "end", "mleAvg"]
-    out_data['start'] = out_data['start'].astype(np.int32)
-    out_data['end'] = out_data['end'].astype(np.int32)
     out_data.loc[~out_data['chr'].isna(),bedgraph_cols].to_csv(bedgraph, sep='\t', index=False, header=False)
 
 

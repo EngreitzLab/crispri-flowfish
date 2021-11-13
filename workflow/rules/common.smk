@@ -109,18 +109,25 @@ def get_bin_list():
 	print("Processing unique bins: " + ' '.join(binList))
 	return(binList)
 
-def get_gene(wildcards):
+def get_gene_for_qPCR_adjustment(wildcards):
 	currSamples = samplesheet.loc[(samplesheet['ExperimentIDReplicates'] == wildcards.ExperimentIDReplicates) & (samplesheet['Bin'].isin(binList))]
-	Gene = currSamples['FlowFISHGene'].unique()
+	Gene = currSamples['qPCRGene'].unique()
 	if (len(Gene) != 1):
 		print(currSamples['SampleID'])
-		raise ValueError("Found more than one possible Gene. Correct the samplesheet and rerun.")
+		raise ValueError("Found zero or more than one possible Gene. Correct the samplesheet and rerun.")
+	return Gene[0]
+
+def get_target_gene_symbol(wildcards):
+	currSamples = samplesheet.loc[(samplesheet['ExperimentIDReplicates'] == wildcards.ExperimentIDReplicates) & (samplesheet['Bin'].isin(binList))]
+	Gene = currSamples['GeneSymbol'].unique()
+	if (len(Gene) != 1):
+		print(currSamples['SampleID'])
+		raise ValueError("Found zero or more than one possible Gene. Correct the samplesheet and rerun.")
 	return Gene[0]
 
 
-
 # global variables
-requiredCols = ['SampleID','Bin','PCRRep']
+requiredCols = ['SampleID','Bin','PCRRep','GeneSymbol','qPCRGene']
 keyCols = config['experiment_keycols'].split(',')
 repCols = config['replicate_keycols'].split(',')
 codedir = config['codedir']

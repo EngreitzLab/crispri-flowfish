@@ -30,18 +30,21 @@ def FlowFISHtssKD(GENE, WINDOWS, QPCR, GENELIST, OUTFILE, SLOP):
     #----------------------------------------- #
     # Get TSS region (+/- 500 kb from TSS)
     #----------------------------------------- #
-    data=pd.merge(qpcr, genes)
+    data=pd.merge(qpcr, genes[['name','tss','chr','start','end','strand']], on='name')
     
     tss=pd.DataFrame()
     tss["chr"]=data["chr"]
     tss["start"]=data["tss"]-SLOP#.apply(lambda x: x-SLOP)
     tss["end"]=data["tss"]+SLOP#.apply(lambda x: x+SLOP)
 
-    if qpcr["TSS_Override"].isnull().any()==False: # If the TSS in the genes file is wrong
-        print("TSS override: {}".format(SCREEN))
-        tss["start"]=int(qpcr["TSS_Override"]-SLOP)
-        tss["end"]=int(qpcr["TSS_Override"]+SLOP)
+    if "TSS_Override" in qpcr:
+        if qpcr["TSS_Override"].isnull().any()==False: # If the TSS in the genes file is wrong
+            print("TSS override: {}".format(SCREEN))
+            tss["start"]=int(qpcr["TSS_Override"]-SLOP)
+            tss["end"]=int(qpcr["TSS_Override"]+SLOP)
     print(tss[['start', 'end']])
+
+    print(qpcr["TSS_qPCR"])
         
     #----------------------------------------- #
         # Get 20-guide window
@@ -60,7 +63,10 @@ def FlowFISHtssKD(GENE, WINDOWS, QPCR, GENELIST, OUTFILE, SLOP):
         #----------------------------------------- #
     FF=best["mean"]
     qpcr["FlowFISH_at_TSS"]=1+best["mean"] # w20 gives KD as negative, so 20% remaining is -0.8
-    qpcr["Background"]=(qpcr["FlowFISH_at_TSS"]-qpcr["TSS_qPCR"])/(1-qpcr["FlowFISH_at_TSS"])
+    try:
+        qpcr["Background"]=(qpcr["FlowFISH_at_TSS"]-qpcr["TSS_qPCR"])/(1-qpcr["FlowFISH_at_TSS"])
+    except:
+        qpcr["Background"]="NA"
 
         #----------------------------------------- #
         # Write output

@@ -43,7 +43,7 @@ rule score_dhs:
     shell:
         "python crispri-flowfish/workflow/scripts/ScoreEnhancers.py -c {input.collapse} -s {input.scaled} \
             -u {output.summary} -o {output.score} -p {params.peaks} -m {params.minguides} \
-            -e {params.mineffectsize} -f {params.fdr} -exptName {wildcards.ExperimentIDReplicates}" 
+            -e {params.mineffectsize} -f {params.fdr} --exptName {wildcards.ExperimentIDReplicates}" 
 
         # $SCREEN $PROJECTDIR $POWER $MINEFFECTSIZE"
         # "{params.score} {params.screen} {params.mineffectsize} {params.enhancers} . {params.power} {params.codedir}"
@@ -53,11 +53,11 @@ rule score_dhs:
 rule summarize_peak_calling:
     input:
         lambda wildcards:
-            ['results/byExperimentRep/{ExperimentIDReplicates}.PeakCallingSummary.txt'.format(ExperimentIDReplicates=e) for e in samplesheet['ExperimentIDReplicates']]
+            ['results/byExperimentRep/{ExperimentIDReplicates}.PeakCallingSummary.txt'.format(ExperimentIDReplicates=e) for e in samplesheet['ExperimentIDReplicates'].drop_duplicates()]
     output:
         summary='results/summary/PeakCallingSummary.tsv'
     shell:
-        "csvtk concat -t {input}"
+        "csvtk concat -t {input} > {output.summary}"
 
 
 # format screen for prediction
@@ -67,7 +67,7 @@ rule format_data:
     output:
         screendata='results/byExperimentRep/{ExperimentIDReplicates}.ScreenData.txt'
     params:
-        gene=get_gene,
+        gene=get_target_gene_symbol,
         score='results/byExperimentRep/{ExperimentIDReplicates}.scaled.txt' # need to add projectdir for full path here?
     run:
         shell('echo -e "Screen\tScreenData\tRNAReadoutMethod\tReference" > {output.screendata}')
