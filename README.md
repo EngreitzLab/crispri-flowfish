@@ -29,7 +29,7 @@ Install Snakemake and conda environment using [conda](https://conda.io/projects/
 
 For installation details, see the [instructions in the Snakemake documentation](https://snakemake.readthedocs.io/en/stable/getting_started/installation.html).
 
-### Step 3: Set up the Sample Sheet
+### Step 3.1: Set up the Sample Sheet 
 
 (Updated 5/7/21)
 
@@ -37,10 +37,12 @@ The Sample Sheet lists all of the sequencing libraries that will be included in 
 
 Required columns:
     
-    SampleID          Unique name for each amplicon library.
-    Bin               Name of a FACS-sorted bin (e.g.: A B C D E F). 'All' for input samples. 'Neg' or blank if not applicable
-    PCRRep            PCR replicate number or name
-
+    SampleID            Unique name for each amplicon library.
+    Bin                 Name of a FACS-sorted bin (e.g.: A B C D E F). 'All' for input samples. 'Neg' or blank if not applicable
+    PCRRep              PCR replicate number or name
+    qPCRGene            ID to join with qPCR input table (see below)
+    GeneSymbol          Gene symbol of FlowFISH'd target gene, for annotating data files for downstream analysis and merging into config.genelist
+    
 Optional columns:
 
     [Experiment Keys] Provide any number of additional columns (e.g., CellLine) that distinguish different samples.
@@ -55,6 +57,42 @@ Optional columns:
                         then compared according to grouping of the experiment key.
     fastqR1           If provided in the Sample Sheet, overwrites the default value (config['fastqdir']/{SampleID}_*_R1_*fastq.gz)
 
+### Step 3.2: Set up the guide design file
+
+This file lists information about the gRNAs included in the experiment, and should in theory be output by the Engreitz Lab CRISPRi design pipeline (https://github.com/broadinstitute/CRISPRiTilingDesign)
+
+Columns (most are legacy from the gRNA designer and are not used by this pipeline):
+    
+    chr                 chromosome for gRNA spacer (can be blank, e.g. for non-targeting control)
+    start               start coordinate for gRNA spacer (can be blank, e.g. for non-targeting control)
+    end                 end coordinate for gRNA spacer (can be blank, e.g. for non-targeting control)
+    name                unique ID for the gRNA 
+    score               A score for the gRNA (not used by this pipeline)
+    strand              strand of the gRNA spacer
+    GuideSequence       Spacer sequence (variable length)
+    GuideSequenceMinusG Spacer sequence, minus a leading G (variable length)
+    MappingSequence     Fixed length spacer sequence used for mapping
+    OffTargetScore      gRNA off-target score
+    target              Required column used for grouping gRNAs into targets (e.g. promoter of a given gene) or 'negative_control' for negative control gRNAs
+    subpool             Column specifying a group of gRNAs 
+    OligoID             unique ID for the gRNA [required]
+
+
+### Step 3.3: Set up the TSS qPCR file (optional)
+
+This file specifies an optional scaling parameter, representing the effect on gene expression when perturbing the TSS of a given gene, used to linearly adjust the effects estimated by the FlowFISH assay. For example, some probesets have some detectable background fluorescence that means that the knockdown from FlowFISH appears to be only 50%, when in reality it is 80% knockdown plus some background. To remove this background signal, we pass in an externally measured TSS knockdown value (e.g. 80%) into the pipeline, which is then used to adjust the FlowFISH estimated effects to match (based on the best 20-gRNA window around the TSS). 
+
+If this file is not provided, then this TSS qPCR shifting calculation is not done (see workflow/scripts/FlowFISHtssKD.py)
+
+This file includes the following columns:
+    
+    qPCRGene            Unique ID to merge into the Sample Table, to specify which values in this table should be used for which samples
+    name                Gene symbol to merge into the config.genelist file
+    TSS_Override        If provided, overrides the TSS coordinate provided in 'tss' column of config.genelist
+    TSS_qPCR            Fraction expression remaining as measured by qPCR (e.g. 0.15 for 15% remaining). Set to NA to skip this adjustment.
+                          The best 20-gRNA window from the FlowFISH screen will be adjusted to this value
+    [Additional cols]   Any number of additional optional columns useful for annotating the qPCR data
+    
 ### Step 4: Provide sort params files
 
 To do.
@@ -91,3 +129,25 @@ snakemake \
 `
 
 For more about cluster configuration using snakemake, see [here](https://www.sichong.site/2020/02/25/snakemake-and-slurm-how-to-manage-workflow-with-resource-constraint-on-hpc/)
+
+### Step 7: Interpreting outputs
+
+Description of output files, in sequential order (updated JME 11/13/21):
+
+    {s}.bin_counts.txt              Guide counts per FlowFISH bin
+    {s}.bin_freq.txt                Guide count frequencies per FlowFISH bin (counts for gRNA G / sum of counts for all gRNAs)
+    {s}.raw_effects.txt             Two estimates of gRNA expression levels, output by estimate_effect_sizes.R:  WeightedAvg represents weighted average expression across bins, and logMean and logSD give the MLE estimate (in log10 space)
+    {s}.real_space.{txt,bedgraph}   gRNA effects converted to "fraction expression remaining" in real space, normalized to negative control gRNAs (e.g. 1 = gRNA does not change expression vs control gRNAs; 0.4 = gRNA reduces expression by 60% vs control gRNAs)
+    {s}.windows.*                   Average effects of 20-gRNA windows (max span: 750bp). Most relevant for comprehensive tiling screens, not as relevant for peak-focused screens except it is used for the qPCR adjustment.
+    {s}.scaled.*                    gRNA effects ("fraction expression remaining") linearly shifted so that knockdown at the TSS of the target gene matches the provided qPCR data, and clamped to limit the maximum gRNA effect size (currently, to 5) [To do: Add flag to skip this adjustment for making downstream files]
+    {s}.collapse.bed                BED file containing peak coordinates and the scores of overlapping RNAs (comma-separated list)
+    {s}.FullEnhancerScore.txt       Table containing full statistics for comparing gRNAs in each peak to negative controls (effect size for each peak, p-value, n guides, etc.)
+    {s}.PeakCallingSummary.txt      Summary of peak calling statistics for a sample, to facilitate comparisons across samples
+    {s}.tfdr0.05.bed                BED file containing significant peaks (where t-test adjusted p < 0.05 for comparing gRNAs in the peak vs negative control gRNAs)
+    {s}.ScreenData.txt              Formatted metadata for creating the KnownEnhancers.txt formatted file
+    {s}.KnownEnhancers.FlowFISH.txt Format screen data for integrating across samples for comparison to models, including annotating peaks with gene TSS coordinate, distance to TSS, study name, etc.
+    
+Recommended analysis:
+* Load in the .real_space.bedgraph files into IGV to look at MLE effect size estimates for individual gRNAs, before qPCR scaling and effect size clamping (or .scaled.bedgraph files with qPCR scaling)
+* Use .FullEnhancerScore.txt (or .KnownEnhancers.FlowFISH.txt file, if created) for analysis of results aggregated by peaks [note that this includes the qPCR scaling]
+
