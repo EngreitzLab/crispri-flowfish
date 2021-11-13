@@ -55,7 +55,7 @@ Optional columns:
                         then compared according to grouping of the experiment key.
     fastqR1           If provided in the Sample Sheet, overwrites the default value (config['fastqdir']/{SampleID}_*_R1_*fastq.gz)
 
-### Step 3.2: Get the guide design file
+### Step 3.2: Set up the guide design file
 
 This file lists information about the gRNAs included in the experiment, and should in theory be output by the Engreitz Lab CRISPRi design pipeline (https://github.com/broadinstitute/CRISPRiTilingDesign)
 
@@ -75,6 +75,19 @@ Columns (most are legacy from the gRNA designer and are not used by this pipelin
     subpool             Column specifying a group of gRNAs 
     OligoID             unique ID for the gRNA [required]
 
+
+### Step 3.3: Set up the TSS qPCR file (optional)
+
+This file specifies an optional scaling parameter, representing the effect on gene expression when perturbing the TSS of a given gene, used to linearly adjust the effects estimated by the FlowFISH assay. For example, some probesets have some detectable background fluorescence that means that the knockdown from FlowFISH appears to be only 50%, when in reality it is 80% knockdown plus some background. To remove this background signal, we pass in an externally measured TSS knockdown value (e.g. 80%) into the pipeline, which is then used to shift/adjust the FlowFISH estimated effects to match (based on the best 20-gRNA window around the TSS). 
+
+If this file is not provided, then this TSS qPCR shifting calculation is not done (see workflow/scripts/FlowFISHtssKD.py)
+
+This file includes the following columns:
+    
+    [KeyCols]           Any number of columns matching the names of columns in the Sample Sheet, for table join
+    name                Gene symbol to merge into the config.genelist file
+    TSS_Override        If provided, overrides the TSS coordinate provided in 'tss' column of config.genelist
+    
 
 ### Step 4: Provide sort params files
 
@@ -121,8 +134,8 @@ Description of output files, in sequential order (updated JME 11/13/21):
     {s}.bin_freq.txt                Guide count frequencies per FlowFISH bin (counts for gRNA G / sum of counts for all gRNAs)
     {s}.raw_effects.txt             Two estimates of gRNA expression levels, output by estimate_effect_sizes.R:  WeightedAvg represents weighted average expression across bins, and logMean and logSD give the MLE estimate (in log10 space)
     {s}.real_space.{txt,bedgraph}   gRNA effects converted to "fraction expression remaining" in real space, normalized to negative control gRNAs (e.g. 1 = gRNA does not change expression vs control gRNAs; 0.4 = gRNA reduces expression by 60% vs control gRNAs)
-    {s}.windows.*                   Average effects of 20-gRNA windows (max span: 750bp). Most relevant for comprehensive tiling screens, not as relevant for peak-focused screens.
-    {s}.scaled.*                    gRNA effects ("fraction expression remaining") linearly scaled so that knockdown at the TSS of the target gene matches the provided qPCR data, and clamped to limit the maximum gRNA effect size (currently, to 5) [To do: Add flag to skip this adjustment for making downstream files]
+    {s}.windows.*                   Average effects of 20-gRNA windows (max span: 750bp). Most relevant for comprehensive tiling screens, not as relevant for peak-focused screens except it is used for the qPCR adjustment.
+    {s}.scaled.*                    gRNA effects ("fraction expression remaining") linearly shifted so that knockdown at the TSS of the target gene matches the provided qPCR data, and clamped to limit the maximum gRNA effect size (currently, to 5) [To do: Add flag to skip this adjustment for making downstream files]
     {s}.collapse.bed                BED file containing peak coordinates and the scores of overlapping RNAs (comma-separated list)
     {s}.FullEnhancerScore.txt       Table containing full statistics for comparing gRNAs in each peak to negative controls (effect size for each peak, p-value, n guides, etc.)
     {s}.PeakCallingSummary.txt      Summary of peak calling statistics for a sample, to facilitate comparisons across samples
