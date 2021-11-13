@@ -112,3 +112,25 @@ snakemake \
 `
 
 For more about cluster configuration using snakemake, see [here](https://www.sichong.site/2020/02/25/snakemake-and-slurm-how-to-manage-workflow-with-resource-constraint-on-hpc/)
+
+### Step 7: Interpreting outputs
+
+Description of output files, in sequential order (updated JME 11/13/21):
+
+    {s}.bin_counts.txt              Guide counts per FlowFISH bin
+    {s}.bin_freq.txt                Guide count frequencies per FlowFISH bin (counts for gRNA G / sum of counts for all gRNAs)
+    {s}.raw_effects.txt             Two estimates of gRNA expression levels, output by estimate_effect_sizes.R:  WeightedAvg represents weighted average expression across bins, and logMean and logSD give the MLE estimate (in log10 space)
+    {s}.real_space.{txt,bedgraph}   gRNA effects converted to "fraction expression remaining" in real space, normalized to negative control gRNAs (e.g. 1 = gRNA does not change expression vs control gRNAs; 0.4 = gRNA reduces expression by 60% vs control gRNAs)
+    {s}.windows.*                   Average effects of 20-gRNA windows (max span: 750bp). Most relevant for comprehensive tiling screens, not as relevant for peak-focused screens.
+    {s}.scaled.*                    gRNA effects ("fraction expression remaining") linearly scaled so that knockdown at the TSS of the target gene matches the provided qPCR data, and clamped to limit the maximum gRNA effect size (currently, to 5) [To do: Add flag to skip this adjustment for making downstream files]
+    {s}.collapse.bed                BED file containing peak coordinates and the scores of overlapping RNAs (comma-separated list)
+    {s}.FullEnhancerScore.txt       Table containing full statistics for comparing gRNAs in each peak to negative controls (effect size for each peak, p-value, n guides, etc.)
+    {s}.PeakCallingSummary.txt      Summary of peak calling statistics for a sample, to facilitate comparisons across samples
+    {s}.tfdr0.05.bed                BED file containing significant peaks (where t-test adjusted p < 0.05 for comparing gRNAs in the peak vs negative control gRNAs)
+    {s}.ScreenData.txt              Formatted metadata for creating the KnownEnhancers.txt formatted file
+    {s}.KnownEnhancers.FlowFISH.txt Format screen data for integrating across samples for comparison to models, including annotating peaks with gene TSS coordinate, distance to TSS, study name, etc.
+    
+Recommended analysis:
+* Load in the .real_space.bedgraph files into IGV to look at MLE effect size estimates for individual gRNAs, before qPCR scaling and effect size clamping
+* Use .FullEnhancerScore.txt (or .KnownEnhancers.FlowFISH.txt file, if created) for analysis of results aggregated by peaks [note that this includes the qPCR scaling]
+
