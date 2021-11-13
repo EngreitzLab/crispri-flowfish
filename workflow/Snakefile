@@ -39,11 +39,30 @@ rule map_reads:
     input:
         fastq=lambda wildcards: samplesheet.at[wildcards.SampleID,'fastqR1'],
     output:
-        sam='results/samFiles/{SampleID}.sam.gz'
+        samgzAligned='results/samFiles/{SampleID}.sam.gz',
+        fastqUnaligned='results/samFiles/{SampleID}.unaligned.fastq.gz',
+        alignment_stats='results/samFiles/{SampleID}.alignment_stats.txt'
     params:
-    	index=config['guide_index']
+    	index=config['guide_index'],
+        fastqUnaligned='results/samFiles/{SampleID}.unaligned.fastq'
     shell:
-        "zless {input.fastq} | bowtie -v0 -p1 --all -x {params.index} - | gzip > {output.sam}"
+        """
+        zless {input.fastq} | bowtie -v0 -p1 --all -x {params.index} --un {params.fastqUnaligned} - | gzip > {output.samgzAligned}
+        ALIGNED_COUNT=$(zcat {output.samgzAligned} | wc -l)
+        UNALIGNED_COUNT=$(cat {params.fastqUnaligned} | wc -l)
+        UNALIGNED_COUNT=$(( $UNALIGNED_COUNT / 4))
+        echo -e "SampleID\tnReadsAligned\tnReadsUnaligned" > {output.alignment_stats}
+        echo -e "{wildcards.SampleID}\t$ALIGNED_COUNT\t$UNALIGNED_COUNT" >> {output.alignment_stats}
+        gzip {params.fastqUnaligned}
+        """
+
+rule aggregate_alignment_stats:
+    input:
+        lambda wildcards: ["results/samFiles/{SampleID}.alignment_stats.txt".format(SampleID=s) for s in samplesheet['SampleID']]
+    output:
+        'results/summary/alignment_stats.tsv'
+    shell:
+        "csvtk concat -t {input} > {output}"
 
 
 # count reads per guide in each sample

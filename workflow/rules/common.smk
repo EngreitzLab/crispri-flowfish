@@ -174,7 +174,7 @@ def all_input(wildcards):
 		])
 
 	## Output files for experiments (with replicates merged)
-	wanted_input.extend(["results/summary/PeakCallingSummary.tsv"])
+	wanted_input.extend(["results/summary/PeakCallingSummary.tsv","results/summary/alignment_stats.tsv"])
 
 	return wanted_input
 
