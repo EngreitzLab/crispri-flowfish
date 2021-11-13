@@ -37,10 +37,12 @@ The Sample Sheet lists all of the sequencing libraries that will be included in 
 
 Required columns:
     
-    SampleID          Unique name for each amplicon library.
-    Bin               Name of a FACS-sorted bin (e.g.: A B C D E F). 'All' for input samples. 'Neg' or blank if not applicable
-    PCRRep            PCR replicate number or name
-
+    SampleID            Unique name for each amplicon library.
+    Bin                 Name of a FACS-sorted bin (e.g.: A B C D E F). 'All' for input samples. 'Neg' or blank if not applicable
+    PCRRep              PCR replicate number or name
+    qPCRGene            ID to join with qPCR input table (see below)
+    GeneSymbol          Gene symbol of FlowFISH'd target gene, for annotating data files for downstream analysis and merging into config.genelist
+    
 Optional columns:
 
     [Experiment Keys] Provide any number of additional columns (e.g., CellLine) that distinguish different samples.
@@ -78,17 +80,19 @@ Columns (most are legacy from the gRNA designer and are not used by this pipelin
 
 ### Step 3.3: Set up the TSS qPCR file (optional)
 
-This file specifies an optional scaling parameter, representing the effect on gene expression when perturbing the TSS of a given gene, used to linearly adjust the effects estimated by the FlowFISH assay. For example, some probesets have some detectable background fluorescence that means that the knockdown from FlowFISH appears to be only 50%, when in reality it is 80% knockdown plus some background. To remove this background signal, we pass in an externally measured TSS knockdown value (e.g. 80%) into the pipeline, which is then used to shift/adjust the FlowFISH estimated effects to match (based on the best 20-gRNA window around the TSS). 
+This file specifies an optional scaling parameter, representing the effect on gene expression when perturbing the TSS of a given gene, used to linearly adjust the effects estimated by the FlowFISH assay. For example, some probesets have some detectable background fluorescence that means that the knockdown from FlowFISH appears to be only 50%, when in reality it is 80% knockdown plus some background. To remove this background signal, we pass in an externally measured TSS knockdown value (e.g. 80%) into the pipeline, which is then used to adjust the FlowFISH estimated effects to match (based on the best 20-gRNA window around the TSS). 
 
 If this file is not provided, then this TSS qPCR shifting calculation is not done (see workflow/scripts/FlowFISHtssKD.py)
 
 This file includes the following columns:
     
-    [KeyCols]           Any number of columns matching the names of columns in the Sample Sheet, for table join
+    qPCRGene            Unique ID to merge into the Sample Table, to specify which values in this table should be used for which samples
     name                Gene symbol to merge into the config.genelist file
     TSS_Override        If provided, overrides the TSS coordinate provided in 'tss' column of config.genelist
+    TSS_qPCR            Fraction expression remaining as measured by qPCR (e.g. 0.15 for 15% remaining). Set to NA to skip this adjustment.
+                          The best 20-gRNA window from the FlowFISH screen will be adjusted to this value
+    [Additional cols]   Any number of additional optional columns useful for annotating the qPCR data
     
-
 ### Step 4: Provide sort params files
 
 To do.
@@ -144,6 +148,6 @@ Description of output files, in sequential order (updated JME 11/13/21):
     {s}.KnownEnhancers.FlowFISH.txt Format screen data for integrating across samples for comparison to models, including annotating peaks with gene TSS coordinate, distance to TSS, study name, etc.
     
 Recommended analysis:
-* Load in the .real_space.bedgraph files into IGV to look at MLE effect size estimates for individual gRNAs, before qPCR scaling and effect size clamping
+* Load in the .real_space.bedgraph files into IGV to look at MLE effect size estimates for individual gRNAs, before qPCR scaling and effect size clamping (or .scaled.bedgraph files with qPCR scaling)
 * Use .FullEnhancerScore.txt (or .KnownEnhancers.FlowFISH.txt file, if created) for analysis of results aggregated by peaks [note that this includes the qPCR scaling]
 
