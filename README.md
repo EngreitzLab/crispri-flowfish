@@ -73,7 +73,8 @@ Columns (most are legacy from the gRNA designer and are not used by this pipelin
     GuideSequenceMinusG Spacer sequence, minus a leading G (variable length)
     MappingSequence     Fixed length spacer sequence used for mapping
     OffTargetScore      gRNA off-target score
-    target              Required column used for grouping gRNAs into targets (e.g. promoter of a given gene) or 'negative_control' for negative control gRNAs
+    target              Required column used for grouping gRNAs into targets (e.g. promoter of a given gene)
+                         Important: enter 'negative_control' for control gRNAs used to normalize the effects of other gRNAs
     subpool             Column specifying a group of gRNAs 
     OligoID             unique ID for the gRNA [required]
 
