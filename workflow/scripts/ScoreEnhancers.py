@@ -28,6 +28,8 @@ def writeBed(df, OUTFILE, score=None,negative=False):
         a[cols].to_csv(OUTFILE, sep='\t', header=False, index=False)
     except KeyError:
         a.to_csv(OUTFILE, sep='\t', header=False, index=False)
+    except ValueError:
+        a.to_csv(OUTFILE, sep='\t', header=False, index=False)
 
 
 ##############################################################

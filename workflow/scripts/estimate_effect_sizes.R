@@ -85,7 +85,7 @@ estimateSeventhBinEM <- function(mu.guess, sd.guess, bin.counts, bins, minmean=M
 # per bin (which is of length nbins+1, to account for missed cells)
 # returns the negative of the log likelihood of observing those counts with the given parameters
 ll <- function(mu, std, observations, bins) {
-  write("Invoked NLL",file=log,append=TRUE)
+  # write("Invoked NLL",file=log,append=TRUE)
   # write(dim(bins),file=log,append=TRUE)
 
   #writeLines("Invoked NLL", log)
@@ -129,6 +129,7 @@ getNormalMLE <- function(mu.i, sd.i, bin.counts, bins, input.present, idx, total
 
   # cast to numeric vector
   bin.counts <- as.numeric(as.matrix(bin.counts))
+
 
   # first, need to figure out how to estimate the seventh bin counts
   seventh.bin.count <- 0
@@ -193,7 +194,8 @@ getBinNames <- function(counts) {
   return(bin.names)
 }
 
-loadSortParams_Astrios <- function(filename, mS, total.binname="Total") {
+# loadSortParams_Astrios <- function(filename, mS, total.binname="Total") {
+loadSortParams_Astrios <- function(filename, bin.names, total.binname="Total") {
   ## Returns a list with the following items:
   ## bins: data.frame with the following columns:
   ##   name
@@ -202,6 +204,8 @@ loadSortParams_Astrios <- function(filename, mS, total.binname="Total") {
   ##   upperBound (log10)
   ##   count
   ## totalCount: Total count of cells sorted
+
+  print(bin.names)
 
   sort.params <- read.delim(filename)
 
@@ -222,22 +226,28 @@ loadSortParams_Astrios <- function(filename, mS, total.binname="Total") {
   total.count <- sort.params$Count[sort.params$Barcode == total.binname]
   seed <- log10(1+(sort.params[1,'Std.Dev.'] / sort.params[1,'Mean'])^2)
 
-  if (! all(colnames(mS)[colnames(mS) %in% sort.params$bins$name] == sort.params$bins$name) ) {
-    stop("Did not find columns matching bin names in the merged count table or did not find them in the same order")
+  # check that it has all the bins that the countsFile has
+  if (sum(sort.params$Barcode %in% bin.names) != length(bin.names)) {
+    stop("Sort parameters file did not have all the bins")
   }
-  
-  filt.names <- vector()
 
-  for (i in c(1:length(bin.names))) {
-    name <- bin.names[i]
-    if (sum(mS[,name]) > 0) {
-      filt.names <- c(filt.names, bin.names[i])
-    }
-  } 
+  # if (! all(colnames(mS)[colnames(mS) %in% sort.params$bins$name] == sort.params$bins$name) ) {
+  #   stop("Did not find columns matching bin names in the merged count table or did not find them in the same order")
+  # }
+  
+  # filt.names <- vector()
+
+  # for (i in c(1:length(bin.names))) {
+  #   name <- bin.names[i]
+  #   if (sum(mS[,name]) > 0) {
+  #     filt.names <- c(filt.names, bin.names[i])
+  #   }
+  # } 
 
   bins <- data.frame(name=bin.names, mean=bin.means, lowerBound=log10(bin.bounds[,1]), upperBound=log10(bin.bounds[,2]), count=sort.params$Count[bin.indices], stringsAsFactors=F)
   rownames(bins) <- bin.names
-  return(list(bins=bins[filt.names,], totalCount=total.count, sd.seed=seed))
+  museed <- log10(bin.bounds[4,1])
+  return(list(bins=bins[bin.names,], totalCount=total.count, sd.seed=seed, mu.seed=museed))
 }
 
 loadSortParams_BigFoot <- function(filename, bin.names, total.binname="Total", full.file=TRUE) {
@@ -354,6 +364,13 @@ loadSortParams_BigFoot_noTotal <- function(filename, bin.names, full.file=FALSE)
   return(list(bins=bins, totalCount=total.count, sd.seed=seed, mu.seed=mu.seed))
 }
 
+addMetaData <- function(mS, bin.names) {
+  mS$sumreads <- rowSums(mS[,bin.names])
+  mS$numobsbins <- rowSums(mS[,bin.names]>0)
+  return(mS)
+}
+
+
 
 rescaleReadCounts <- function(mS, sort.params, bin.names, input="InputCount") {
   binNames <- bin.names
@@ -366,12 +383,12 @@ rescaleReadCounts <- function(mS, sort.params, bin.names, input="InputCount") {
 
 
 addWeightedAverage <- function(mS, sort.params, bin.names) {
-  mS$sum1 <- rowSums(mS[,bin.names])
+  mS$sumcells <- rowSums(mS[,bin.names])
   sort.params$bins$mean <- 0.5 * (sort.params$bins$lowerBound + sort.params$bins$upperBound)
   sort.params$bins['A','mean'] <- sort.params$bins['A','upperBound']
   sort.params$bins['F','mean'] <- sort.params$bins['F','lowerBound']
 
-  mS$WeightedAvg <- ifelse(mS$sum1 == 0, 0, rowSums(t(sort.params$bins[bin.names,'mean'] * t(as.matrix(mS[,bin.names])))) / mS$sum1)
+  mS$WeightedAvg <- ifelse(mS$sumcells == 0, 0, rowSums(t(sort.params$bins[bin.names,'mean'] * t(as.matrix(mS[,bin.names])))) / mS$sumcells)
   return(mS)
 }
 
@@ -379,7 +396,9 @@ addWeightedAverage <- function(mS, sort.params, bin.names) {
 # mS <- loadReadCounts(designDocLocation, countsLocation)
 counts <- loadReadCounts(countsLocation)
 bin.names <- getBinNames(counts)
-sort.params <- loadSortParams_BigFoot_noTotal(sortParamsloc, bin.names)
+sort.params <- loadSortParams_Astrios(sortParamsloc, bin.names)
+# sort.params <- loadSortParams_BigFoot_noTotal(sortParamsloc, bin.names)
+counts <- addMetaData(counts, bin.names)
 counts <- rescaleReadCounts(counts, sort.params, bin.names)
 counts <- addWeightedAverage(counts, sort.params, bin.names)
 
@@ -389,6 +408,7 @@ counts <- addWeightedAverage(counts, sort.params, bin.names)
 runMLE <- function(mS, sort.params) {
   ## seed mean and standard deviation
   mu.seed <- sort.params$mu.seed #.5 
+  print(mu.seed)
   sd.seed <- sort.params$sd.seed #.5 
   # print(sd.seed)
   bin.bounds <- as.matrix(sort.params$bins[,c("lowerBound","upperBound")])

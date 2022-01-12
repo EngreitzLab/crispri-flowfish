@@ -41,14 +41,14 @@ stopifnot(all(c("chr","start","end",data.col,"target","GuideSequence") %in% coln
 
 x$nG <- sapply(as.character(as.matrix(x$GuideSequence)), function(x) sum(strsplit(x, "")[[1]] == "G"))
 x$GuideLength <- sapply(as.character(as.matrix(x$GuideSequence)), nchar)
-
-to.use <- subset(x, OffTargetScore >= opt$minOffTargetScore & 
-                    nG <= opt$maxGsInGuideSequence & 
-                    GuideLength >= opt$minGuideLength & 
-                    GuideLength <= opt$maxGuideLength)
-for (col.name in t0columns) {
-  to.use <- subset(to.use, get(col.name) >= opt$minT0count)
-}
+to.use <- x
+# to.use <- subset(x, OffTargetScore >= opt$minOffTargetScore & 
+#                     nG <= opt$maxGsInGuideSequence & 
+#                     GuideLength >= opt$minGuideLength & 
+#                     GuideLength <= opt$maxGuideLength)
+# for (col.name in t0columns) {
+#   to.use <- subset(to.use, get(col.name) >= opt$minT0count)
+# }
 cat(nrow(to.use),"of",nrow(x),"total guideRNAs passed the filters\n")
 stopifnot(nrow(to.use) > 0)
 

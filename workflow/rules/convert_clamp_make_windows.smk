@@ -11,7 +11,8 @@ rule convert_to_real_space:
         mleouts='results/byExperimentRep/{ExperimentIDReplicates}.raw_effects.txt',
         design=config['design_file']
     params:
-        minsum=config['min_guide_count_sum']
+        minsum=50, # config['min_guide_count_sum']
+        minbins=4
     output:
         #bed='results/byExperimentRep/{ExperimentIDReplicates}.real_space.bed',
         bedgraph='results/byExperimentRep/{ExperimentIDReplicates}.real_space.bedgraph',
@@ -26,7 +27,8 @@ rule convert_to_real_space:
             -b {output.bedgraph} \
             -o {output.real} \
             -l {output.log} \
-            --minsum {params.minsum}"
+            --minsum {params.minsum} \
+            --minbins {params.minbins}"
 
 
 # calculate effect per 20-guide window
