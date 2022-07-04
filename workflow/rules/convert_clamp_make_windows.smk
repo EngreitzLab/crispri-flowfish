@@ -11,7 +11,7 @@ rule convert_to_real_space:
         mleouts='results/byExperimentRep/{ExperimentIDReplicates}.raw_effects.txt',
         design=config['design_file']
     params:
-        minsum=50, # config['min_guide_count_sum']
+        minsum=.050, # config['min_guide_count_sum']
         minbins=4
     output:
         #bed='results/byExperimentRep/{ExperimentIDReplicates}.real_space.bed',

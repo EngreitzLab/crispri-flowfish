@@ -135,11 +135,13 @@ getNormalMLE <- function(mu.i, sd.i, bin.counts, bins, input.present, idx, total
   seventh.bin.count <- 0
   if (input.present) {
     seventh.bin.count <- estimateSeventhBinInput(bin.counts, mS$input.fraction[idx], total.count)
+    method <- "input"
   }
 
   if (seventh.bin.count <= 0 || !input.present) {
     seventh.bin.count <- estimateSeventhBinEM(mu.i, sd.i, bin.counts, bins)
     print(idx)
+    method <- "EM"
   }
   
   # add on "seventh" bin counts
@@ -161,8 +163,8 @@ getNormalMLE <- function(mu.i, sd.i, bin.counts, bins, input.present, idx, total
   MU <- est@coef[[1]]
   SI <- est@coef[[2]]
 
-  result <- c(MU, SI)
-  names(result) <- c("mean", "sd")
+  result <- c(MU, SI, method)
+  names(result) <- c("mean", "sd", "method")
   # print(result)
   return(result)
 }
@@ -249,6 +251,61 @@ loadSortParams_Astrios <- function(filename, bin.names, total.binname="Total") {
   museed <- log10(bin.bounds[4,1])
   return(list(bins=bins[bin.names,], totalCount=total.count, sd.seed=seed, mu.seed=museed))
 }
+
+loadSortParams_Astrios_nototal <- function(filename, bin.names, total.binname="Total") {
+  ## Returns a list with the following items:
+  ## bins: data.frame with the following columns:
+  ##   name
+  ##   mean (log10)
+  ##   lowerBound (log10)
+  ##   upperBound (log10)
+  ##   count
+  ## totalCount: Total count of cells sorted
+
+  print(bin.names)
+
+  sort.params <- read.delim(filename)
+
+  ## Check the sort params
+  required.cols <- c("Mean","Bounds","Barcode","Count")
+  if (! all(required.cols %in% colnames(sort.params)) ) {
+    stop("Sort parameters file did not have the needed :", required.cols)
+  }
+  if (!(total.binname %in% sort.params$Barcode)) {
+    stop(paste0("Barcode column in sort parameters file needs an entry called '",total.binname,"' to represent the total cell count from FACS"))
+  }
+
+  ## Extract info
+  bin.indices <- which(sort.params$Barcode != total.binname)
+  bin.names <- gsub("-",".",as.character(sort.params$Barcode[bin.indices]))
+  bin.means <- log10(sort.params$Mean[bin.indices])
+  bin.bounds <- do.call(rbind, lapply(strsplit(gsub("\\(| |\\)","", sort.params$Bounds[bin.indices]),","), as.numeric))
+  total.count <- 0 #sort.params$Count[sort.params$Barcode == total.binname]
+  seed <- log10(1+(sort.params[1,'Std.Dev.'] / sort.params[1,'Mean'])^2)
+
+  # check that it has all the bins that the countsFile has
+  if (sum(sort.params$Barcode %in% bin.names) != length(bin.names)) {
+    stop("Sort parameters file did not have all the bins")
+  }
+
+  # if (! all(colnames(mS)[colnames(mS) %in% sort.params$bins$name] == sort.params$bins$name) ) {
+  #   stop("Did not find columns matching bin names in the merged count table or did not find them in the same order")
+  # }
+  
+  # filt.names <- vector()
+
+  # for (i in c(1:length(bin.names))) {
+  #   name <- bin.names[i]
+  #   if (sum(mS[,name]) > 0) {
+  #     filt.names <- c(filt.names, bin.names[i])
+  #   }
+  # } 
+
+  bins <- data.frame(name=bin.names, mean=bin.means, lowerBound=log10(bin.bounds[,1]), upperBound=log10(bin.bounds[,2]), count=sort.params$Count[bin.indices], stringsAsFactors=F)
+  rownames(bins) <- bin.names
+  museed <- log10(bin.bounds[4,1])
+  return(list(bins=bins[bin.names,], totalCount=total.count, sd.seed=seed, mu.seed=museed))
+} 
 
 loadSortParams_BigFoot <- function(filename, bin.names, total.binname="Total", full.file=TRUE) {
   ## Returns a list with the following items:
@@ -396,7 +453,7 @@ addWeightedAverage <- function(mS, sort.params, bin.names) {
 # mS <- loadReadCounts(designDocLocation, countsLocation)
 counts <- loadReadCounts(countsLocation)
 bin.names <- getBinNames(counts)
-sort.params <- loadSortParams_Astrios(sortParamsloc, bin.names)
+sort.params <- loadSortParams_Astrios_nototal(sortParamsloc, bin.names)
 # sort.params <- loadSortParams_BigFoot_noTotal(sortParamsloc, bin.names)
 counts <- addMetaData(counts, bin.names)
 counts <- rescaleReadCounts(counts, sort.params, bin.names)
@@ -428,10 +485,11 @@ runMLE <- function(mS, sort.params) {
     # tryCatch({ getNormalMLE(mS$WeightedAvg[i], sd.seed, mS[i,sort.params$bins$name], mS[i,inputCountCol], bin.bounds) }, error = function(err) { write(paste0("MLE errored out at given initialization for guide: ", i, ", using weighted average instead: ", err),file=log,append=TRUE); result <- c(mS$WeightedAvg[i], sd.seed); names(result) <- c("mean", "sd"); return(result) }))))
     # estimate the number of cells falling in n+1th bin
     # estimated.seventh.bin <- estimateSeventhBinInput(mS[i,bin.names], mS[i,input.bin.name] / sum(mS[,input.bin.name]), total.count)    
-    tryCatch({ getNormalMLE(mu.seed, sd.seed, mS[i,bin.names], bin.bounds, input.present, i, total.count, mS) }, error = function(err) { write(paste0("MLE errored out at given initialization for guide: ", i, ", using weighted average instead: ", err),file=log,append=TRUE); result <- c(mS$WeightedAvg[i], sd.seed); names(result) <- c("mean", "sd"); return(result) }))))
+    tryCatch({ getNormalMLE(mu.seed, sd.seed, mS[i,bin.names], bin.bounds, input.present, i, total.count, mS) }, error = function(err) { write(paste0("MLE errored out at given initialization for guide: ", i, ", using weighted average instead: ", err),file=log,append=TRUE); result <- c(mS$WeightedAvg[i], sd.seed, "weighted_avg"); names(result) <- c("mean", "sd", "method"); return(result) }))))
   
   mS$logMean <- mleOuts$mean
   mS$logSD <- mleOuts$sd
+  mS$method <- mleOuts$method
   
   return(mS)
 }
