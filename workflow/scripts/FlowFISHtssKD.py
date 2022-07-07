@@ -22,7 +22,8 @@ def FlowFISHtssKD(GENE, WINDOWS, QPCR, GENELIST, OUTFILE, SLOP):
         qpcr=qpcr[qpcr["Screen"]==SCREEN]# match the qpcr to the screen from windows
     else:
         # treat as a gene
-        qpcr=qpcr.loc[qpcr["name"]==SCREEN].iloc[[0]]
+        qpcr=qpcr.loc[qpcr["qPCRGene"]==SCREEN].iloc[[0]]
+        # qpcr=qpcr.loc[qpcr["name"]==SCREEN].iloc[[0]]
     #print qpcr.head(2)
     assert len(qpcr)==1, "Screen (e.g. GATA1-1) must appear exactly once in qPCR file: " + SCREEN
     genes=read_table(GENELIST)
