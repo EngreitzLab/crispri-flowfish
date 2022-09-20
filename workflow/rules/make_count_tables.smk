@@ -49,6 +49,11 @@ def make_count_table(samplesheet, group_col, group_id, bins, outfile_raw, outfil
             count_tbl[uniqBin] = []
         count_tbl = count_tbl.set_index('OligoID')
 
+    ## Make compatible with multiple sorters
+    ## drop bins from bin list that are not used for particular sorters
+
+    count_tbl = count_tbl.loc[:, (count_tbl.sum(axis=0) != 0)]
+
     count_tbl.index.name = "OligoID"
     count_tbl.to_csv(outfile_raw, sep='\t')
 

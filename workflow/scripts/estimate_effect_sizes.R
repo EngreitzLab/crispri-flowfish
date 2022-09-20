@@ -29,8 +29,8 @@ sortParamsloc <- opt$sortParamsloc
 outputmle <- opt$outputmle
 log <- opt$log
 
-MAXMEAN <- 10000 # in FACS space, max value a guide can take
-MINMEAN <- 1  # in FACS space, max value a guide can take
+MAXMEAN <- 1000000 # in FACS space, max value a guide can take
+MINMEAN <- 10  # in FACS space, min value a guide can take
 
 ## load packages
 # suppressPackageStartupMessages(library(ggplot2))
@@ -102,7 +102,7 @@ ll <- function(mu, std, observations, bins) {
 
   # add n+1th bin = p(fall outside bin)
   pe <- c(pe, 1-sum(pe)) # add a "bin" for the remaining cells
-  pe[pe == 0] <- 10^-10 # remove any 0s from the probabilities (shouldn't happen but might)
+  pe[pe <= 0] <- 10^-10 # remove any 0s from the probabilities (shouldn't happen but might)
 
   # assert that the lengths match
   if (length(pe) != length (observations)) {
@@ -120,7 +120,7 @@ ll <- function(mu, std, observations, bins) {
 # Wrap the maximum likelihood estimator
 # getNormalMLE <- function(mu.i, sd.i, bin.counts, total.count, bins, minmean=MINMEAN, maxmean=MAXMEAN, minvar=0, maxvar=1) {
 # getNormalMLE <- function(mu.i, sd.i, bin.counts, seventh.bin.count, bins, minmean=MINMEAN, maxmean=MAXMEAN, minvar=0, maxvar=1) {
-getNormalMLE <- function(mu.i, sd.i, bin.counts, bins, input.present, idx, total.count, mS, minmean=MINMEAN, maxmean=MAXMEAN, minvar=0, maxvar=1) {
+getNormalMLE <- function(mu.i, sd.i, bin.counts, bins, input.present, idx, total.count, mS, minmean=MINMEAN, maxmean=MAXMEAN, minvar=0.1, maxvar=1) {
   ## mu.i = initial guess of the mean
   ## si.i = initial guess of the standard deviation
   ## bin.counts = vector of counts per bin (observed)
@@ -138,11 +138,10 @@ getNormalMLE <- function(mu.i, sd.i, bin.counts, bins, input.present, idx, total
     method <- "input"
   }
 
-  if (seventh.bin.count <= 0 || !input.present) {
-    seventh.bin.count <- estimateSeventhBinEM(mu.i, sd.i, bin.counts, bins)
-    print(idx)
-    method <- "EM"
-  }
+  seventh.bin.count <- estimateSeventhBinEM(mu.i, sd.i, bin.counts, bins)
+  print(idx)
+  method <- "EM"
+  
   
   # add on "seventh" bin counts
   # o <- c(bin.counts, total.count - sum(bin.counts))
@@ -387,9 +386,9 @@ loadSortParams_BigFoot_noTotal <- function(filename, bin.names, full.file=FALSE)
   #   stop(paste0("Barcode column in sort parameters file needs an entry called '",total.binname,"' to represent the total cell count from FACS"))
   # }
   # check that it has all the bins that the countsFile has
-  if (sum(sort.params$Bin %in% bin.names) != length(bin.names)) {
-    stop("Sort parameters file did not have all the bins")
-  }
+  # if (sum(sort.params$Bin %in% bin.names) != length(bin.names)) {
+    # stop("Sort parameters file did not have all the bins")
+  # }
 
   ## Extract info from sortParams for each bin
   bin.indices <- which(sort.params$Bin %in% bin.names)
@@ -401,12 +400,12 @@ loadSortParams_BigFoot_noTotal <- function(filename, bin.names, full.file=FALSE)
     bin.means <- log10(as.numeric(as.character(sort.params$Mean)[bin.indices]))
     bin.mins <- log10(as.numeric(as.character(sort.params$Min)[bin.indices]))
     bin.maxs <- log10(as.numeric(as.character(sort.params$Max)[bin.indices]))
-    seed <- log10(1+(as.numeric(as.character(sort.params$StdDev[sort.params$Barcode == total.binname])) / as.numeric(as.character(sort.params$Mean[sort.params$Barcode == total.binname])))^2)
+    seed <- 1 # log10(1+(as.numeric(as.character(sort.params$StdDev[sort.params$Barcode == total.binname])) / as.numeric(as.character(sort.params$Mean[sort.params$Barcode == total.binname])))^2)
   } else {
     bin.means <- log10(sort.params$Mean[bin.indices])
     bin.mins <- log10(sort.params$Min[bin.indices])
     bin.maxs <- log10(sort.params$Max[bin.indices])
-    seed <- 1 ## HOW TO CHOOSE SEED??? # log10(1+(sort.params$StdDev[sort.params$Barcode == total.binname] / sort.params$Mean[sort.params$Barcode == total.binname])^2)
+    seed <- 0.5 ## HOW TO CHOOSE SEED??? # log10(1+(sort.params$StdDev[sort.params$Barcode == total.binname] / sort.params$Mean[sort.params$Barcode == total.binname])^2)
   }
   
   bin.counts <- sort.params$Count[bin.names.inorder]
@@ -414,7 +413,7 @@ loadSortParams_BigFoot_noTotal <- function(filename, bin.names, full.file=FALSE)
   # compute some extra numbers which will help our estimation
   total.count <- 0 # sort.params$Count[sort.params$Barcode == total.binname]
 
-  mu.seed <- bin.mins[4]
+  mu.seed <- bin.mins[3]
 
   bins <- data.frame(name=bin.names.inorder, mean=bin.means, lowerBound=bin.mins, upperBound=bin.maxs, count=bin.counts, stringsAsFactors=F)
   rownames(bins) <- bin.names.inorder
@@ -453,8 +452,8 @@ addWeightedAverage <- function(mS, sort.params, bin.names) {
 # mS <- loadReadCounts(designDocLocation, countsLocation)
 counts <- loadReadCounts(countsLocation)
 bin.names <- getBinNames(counts)
-sort.params <- loadSortParams_Astrios_nototal(sortParamsloc, bin.names)
-# sort.params <- loadSortParams_BigFoot_noTotal(sortParamsloc, bin.names)
+# sort.params <- loadSortParams_Astrios_nototal(sortParamsloc, bin.names)
+sort.params <- loadSortParams_BigFoot_noTotal(sortParamsloc, bin.names)
 counts <- addMetaData(counts, bin.names)
 counts <- rescaleReadCounts(counts, sort.params, bin.names)
 counts <- addWeightedAverage(counts, sort.params, bin.names)
