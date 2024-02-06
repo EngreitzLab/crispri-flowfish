@@ -20,7 +20,7 @@ parser.add_argument("-n", "--background", dest="background", type=float, default
 
 parser.add_argument("-g", "--maxg", dest="maxg", type=int, default=10, help="Max number of Gs in guide sequence")
 parser.add_argument("-y", "--maxlen", dest="maxlen", type=int, default=21, help="Max guide length")
-parser.add_argument("-z", "--minlen", dest="minlen", type=int, default=20, help="Min guide length")
+parser.add_argument("-z", "--minlen", dest="minlen", type=int, default=18, help="Min guide length")
 parser.add_argument("-t", "--minofftarget", dest="minofftarget", type=int, default=50, help="Min off target score")
 parser.add_argument("-s", "--minsum", dest="minsum", type=float, default=0, help="Min sum of cells/reads across bins")
 parser.add_argument("-r", "--minbins", dest="minbins", type=int, default=0, help="Min bins a guide needs to be observed in")
