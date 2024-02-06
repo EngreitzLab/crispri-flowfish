@@ -154,3 +154,5 @@ Recommended analysis:
 * Load in the .real_space.bedgraph files into IGV to look at MLE effect size estimates for individual gRNAs, before qPCR scaling and effect size clamping (or .scaled.bedgraph files with qPCR scaling)
 * Use .FullEnhancerScore.txt (or .KnownEnhancers.FlowFISH.txt file, if created) for analysis of results aggregated by peaks [note that this includes the qPCR scaling]
 
+NOTES:
+* (BD 240206) Previously, convert_to_real_space.py (which includes a bunch of guide filtering, which should/could potentially be moved into its own script) filtered out guides with length <20bp (in the GuideSequence column). It might be worth repulling and just checking whether the analysis looks the same after. For a couple screens I checked, this wasn't an issue (since the shorter guides were padded with leading G in this column), but for people who used e.g. Tycko safe-targeting guides, this was problematic!
